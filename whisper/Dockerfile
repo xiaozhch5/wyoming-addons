@@ -1,28 +1,13 @@
-FROM debian:bullseye-slim
+FROM python:3.11.7-bullseye
 
 # Install Whisper
 WORKDIR /usr/src
 ARG WHISPER_VERSION='1.0.1'
 
 RUN \
-    apt-get update \
-    && apt-get install -y --no-install-recommends \
-        build-essential \
-        python3 \
-        python3-dev \
-        python3-pip \
-    \
-    && pip3 install --no-cache-dir -U \
-        setuptools \
-        wheel \
-    && pip3 install --no-cache-dir \
-        --extra-index-url https://www.piwheels.org/simple \
-        "wyoming-faster-whisper==${WHISPER_VERSION}" \
-    \
-    && apt-get purge -y --auto-remove \
-        build-essential \
-        python3-dev \
-    && rm -rf /var/lib/apt/lists/*
+    git clone https://github.com/xiaozhch5/wyoming-faster-whisper \
+    && cd wyoming-faster-whisper \
+    && python3 setup.py install
 
 WORKDIR /
 COPY run.sh ./
